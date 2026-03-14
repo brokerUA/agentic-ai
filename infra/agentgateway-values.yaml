@@ -1,0 +1,24 @@
+controller:
+  image:
+    registry: ghcr.io/kgateway-dev
+    repository: agentgateway-controller
+    tag: v2.2.1
+  env:
+    - name: AGENTGATEWAY_PORT
+      value: "8080"
+
+# Helm values for agentgateway in KGway mode
+config:
+  mode: kgway
+  # For Kubernetes Gateway API mode, agentgateway acts as a GatewayClass controller or integrates with it.
+  gateway:
+    enabled: false
+  # Data plane configuration
+  dataplane:
+    enabled: true
+    port: 8080
+  
+  # Enabling AI Gateway features
+  # This makes agentgateway handle /v1/chat/completions by itself
+  aiGateway:
+    enabled: true

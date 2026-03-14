@@ -1,0 +1,75 @@
+[env]
+# GEMINI_API_KEY = { ref = "GEMINI_API_KEY" }
+# Placeholder: mise will pick this up from environment or .mise.local.toml
+
+[tools]
+kubectl = "1.35.2"
+helm = "4.1.3"
+python = "3.14"
+actionlint = "latest"
+markdownlint-cli2 = "latest"
+
+[tasks.install-gateway-api]
+description = "Install standard Kubernetes Gateway API CRDs (v1.4.0)"
+run = "kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml"
+
+[tasks.deploy-agentgateway]
+description = "Deploy agentgateway using Helm (KGway mode)"
+run = """
+helm upgrade -i --create-namespace \
+  --namespace agentgateway-system \
+  --version v2.2.1 agentgateway-crds oci://ghcr.io/kgateway-dev/charts/agentgateway-crds
+helm upgrade -i -n agentgateway-system agentgateway oci://ghcr.io/kgateway-dev/charts/agentgateway \
+--version v2.2.1 \
+-f infra/agentgateway-values.yaml
+"""
+
+[tasks.deploy-infra]
+description = "Deploy Secrets, ConfigMap, Route and Backend"
+run = """
+# Use envsubst to replace $GEMINI_API_KEY in Secrets if needed
+envsubst < infra/llm-secret.yaml | kubectl apply -f -
+envsubst < infra/llm-api-key-secret.yaml | kubectl apply -f -
+kubectl apply -f infra/ai-backend.yaml \
+              -f infra/provider-config.yaml \
+              -f infra/model-route.yaml \
+              -f infra/gateway.yaml
+"""
+
+[tasks.install-kagent]
+description = "Install KAgent Controller"
+run = """
+helm upgrade -i kagent-crds oci://ghcr.io/kagent-dev/kagent/helm/kagent-crds \
+    --namespace kagent \
+    --create-namespace
+helm upgrade -i kagent oci://ghcr.io/kagent-dev/kagent/helm/kagent \
+    --namespace kagent \
+    --set registry=ghcr.io
+# Wait for CRDs to be ready and apply the fix
+kubectl wait --for=condition=established --timeout=60s crd/modelconfigs.kagent.dev
+envsubst < infra/kagent-fix.yaml | kubectl apply -f -
+"""
+
+[tasks.deploy-agent]
+description = "Deploy declarative Agent and ModelConfig"
+run = "kubectl apply -f agent/model-config.yaml -f agent/basic-agent.yaml"
+
+[tasks.verify]
+description = "Verify infrastructure and agent status"
+run = "./scripts/verify_agent.sh"
+
+[tasks.test-agent]
+description = "Run end-to-end agent test"
+run = "./scripts/test_agent.sh"
+
+[tasks."ai:lint"]
+description = "Lint GitHub Actions YAML files"
+run = "actionlint .github/workflows/*.yml"
+
+[tasks."ai:validate-docs"]
+description = "Locally validate markdown instrumentation files"
+run = "markdownlint-cli2 CODEBASE.md REVIEW.md EVALS.md"
+
+[tasks."ai:simulate-diff"]
+description = "Simulate grabbing a git diff for the current branch"
+run = "git diff main...HEAD > simulated_pr.diff && echo 'Diff saved to simulated_pr.diff'"

@@ -1,0 +1,21 @@
+apiVersion: kagent.dev/v1alpha2
+kind: ModelConfig
+metadata:
+  name: default-model-config
+  namespace: kagent
+spec:
+  provider: OpenAI
+  model: "gemini-2.5-flash-lite"
+  openAI:
+    baseUrl: "http://agent-gateway.agentgateway-system.svc.cluster.local:8080/v1"
+  apiKeySecret: kagent-gemini-key
+  apiKeySecretKey: api-key
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kagent-gemini-key
+  namespace: kagent
+type: Opaque
+stringData:
+  api-key: "$GEMINI_API_KEY"
