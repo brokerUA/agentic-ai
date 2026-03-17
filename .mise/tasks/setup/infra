@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Infrastructure: Kind cluster setup (OpenTofu)"
+
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)/infrastructure/bootstrap"
+tofu init && tofu apply -auto-approve

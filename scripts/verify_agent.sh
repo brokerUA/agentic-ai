@@ -26,12 +26,12 @@ else
 fi
 
 # Check if the agent CRD is deployed
-if kubectl get agent basic-agent > /dev/null 2>&1; then
+if kubectl get agent basic-agent -n kagent > /dev/null 2>&1; then
   echo "✅ Basic Agent CRD is deployed."
   # Check agent status
-  PHASE=$(kubectl get agent basic-agent -o jsonpath='{.status.phase}' 2>/dev/null)
+  PHASE=$(kubectl get agent basic-agent -n kagent -o jsonpath='{.status.phase}' 2>/dev/null)
   if [ -z "$PHASE" ]; then
-    PHASE=$(kubectl get agent basic-agent -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' 2>/dev/null)
+    PHASE=$(kubectl get agent basic-agent -n kagent -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' 2>/dev/null)
     [ "$PHASE" == "True" ] && PHASE="Ready"
     [ "$PHASE" == "False" ] && PHASE="NotReady"
     [ "$PHASE" == "Unknown" ] && PHASE="Unknown"
@@ -39,7 +39,7 @@ if kubectl get agent basic-agent > /dev/null 2>&1; then
   echo "Agent Phase: ${PHASE:-Unknown}"
   
   # Check for errors in status conditions
-  ERROR=$(kubectl get agent basic-agent -o jsonpath='{.status.conditions[?(@.status=="False")].message}' 2>/dev/null)
+  ERROR=$(kubectl get agent basic-agent -n kagent -o jsonpath='{.status.conditions[?(@.status=="False")].message}' 2>/dev/null)
   if [ ! -z "$ERROR" ]; then
     echo "⚠️ Agent Error: $ERROR"
   fi

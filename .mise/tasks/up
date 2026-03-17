@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Full project deployment (infra -> flux -> apps)"
+#MISE alias="up"
+#MISE depends=["setup:infra", "setup:flux", "setup:apps"]
+set -euo pipefail
+# This task is just an aggregator of its dependencies.

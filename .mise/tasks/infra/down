@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Infrastructure: Destroy (Kind cluster)"
+
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)/infrastructure/bootstrap"
+tofu destroy -auto-approve

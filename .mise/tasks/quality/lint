@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Quality: Lint GitHub Actions workflows"
+
+set -euo pipefail
+
+actionlint .github/workflows/*.yml
