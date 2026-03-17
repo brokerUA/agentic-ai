@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Applications: Deploy agents and configs (Kustomize)"
+#MISE depends=["setup:flux"]
+
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+kubectl apply -k kubernetes

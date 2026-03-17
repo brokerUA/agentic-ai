@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Test: End-to-end agent functionality"
+
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+"$ROOT/scripts/test_agent.sh"

@@ -9,6 +9,7 @@ spec:
       namespace: agentgateway-system
   hostnames:
     - "model.agent.internal"
+    - "agent-gateway.agentgateway-system.svc.cluster.local"
   rules:
     - matches:
         - path:

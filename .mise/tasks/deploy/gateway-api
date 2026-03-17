@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Deploy: Kubernetes Gateway API CRDs (v1.4.0)"
+
+set -euo pipefail
+
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
