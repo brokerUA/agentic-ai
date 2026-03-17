@@ -1,0 +1,7 @@
+---
+# MD013 - Line length.
+#  https://github.com/DavidAnson/markdownlint/blob/main/doc/md013.md
+#
+#  Reasons to disable:
+#  - Markdown does not look like the rendered output, in which there are no line breaks.
+MD013: false
