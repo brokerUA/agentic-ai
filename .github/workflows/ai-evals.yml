@@ -10,7 +10,7 @@ on:
 jobs:
   ai-evals:
     runs-on: ubuntu-latest
-    if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run && github.event.workflow_run.conclusion == 'success') }}
     permissions:
       contents: read
       pull-requests: write
@@ -25,18 +25,28 @@ jobs:
         with:
           script: |
             let prNumber;
-            if (context.eventName === 'workflow_run') {
-              const head_branch = context.payload.workflow_run.head_branch;
-              const prs = await github.rest.pulls.list({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                head: `${context.repo.owner}:${head_branch}`
-              });
-              prNumber = prs.data[0]?.number;
-            } else {
+            const { eventName, payload, repo } = context;
+            
+            if (eventName === 'workflow_run') {
+              const run = payload.workflow_run;
+              if (run) {
+                const head_branch = run.head_branch;
+                const prs = await github.rest.pulls.list({
+                  owner: repo.owner,
+                  repo: repo.repo,
+                  head: `${repo.owner}:${head_branch}`
+                });
+                prNumber = prs.data[0]?.number;
+              }
+            } else if (context.issue && context.issue.number) {
               prNumber = context.issue.number;
             }
-            core.setOutput('number', prNumber);
+            
+            if (prNumber) {
+              core.setOutput('number', prNumber);
+            } else {
+              core.setFailed('Could not determine PR number');
+            }
 
       - name: Get Latest AI Review Comment
         id: review_comment
