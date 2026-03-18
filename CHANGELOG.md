@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Исправлена ошибка в GitHub Actions workflow `.github/workflows/flux-push.yaml`, приводившая к невозможности извлечения digest артефакта.
-- Устранено предупреждение об устаревании Node.js 20 в CI/CD пайплайнах.
+- Fixed an error in the GitHub Actions workflow `.github/workflows/flux-push.yaml` that prevented artifact digest extraction.
+- Resolved Node.js 20 deprecation warnings in CI/CD pipelines.
 
 ## [0.1.0] - 2026-03-19
 
