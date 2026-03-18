@@ -1,37 +1,41 @@
-# Codebase Documentation for AI Agent
+# Документация кодовой базы AI Agent
 
-## Project Summary
+## Краткое описание проекта
 
-This project implements a Kubernetes-native agentic infrastructure using `agentgateway` (in KGway mode with **Kubernetes Gateway API**) and `kagent`. It provides a way to deploy and manage AI agents and their model configurations as Kubernetes resources.
+Этот проект реализует облачную инфраструктуру для AI-агентов на базе Kubernetes, используя `agentgateway` (в режиме KGway с **Kubernetes Gateway API**) и `kagent`. Он позволяет развертывать AI-агентов и их конфигурации как стандартные ресурсы Kubernetes.
 
-## Architecture
+## Архитектура
 
-- **AgentGateway (KGway mode)**: Fully integrated with Kubernetes Gateway API (`Gateway`, `HTTPRoute`, `AgentgatewayBackend`). It acts as a gateway for routing AI requests to various providers.
-- **KAgent**: Controller and agents are deployed to manage the lifecycle of AI agents within the cluster.
-- **Infrastructure Layer**: Uses standard Kubernetes objects (Secret, ConfigMap, ReferenceGrant) alongside Custom Resource Definitions (CRDs) from `agentgateway` and `kagent`.
+- **AgentGateway (режим KGway)**: Полностью интегрирован с Kubernetes Gateway API (`Gateway`, `HTTPRoute`, `AgentgatewayBackend`). Выступает в качестве шлюза для маршрутизации запросов к различным провайдерам LLM.
+- **KAgent**: Контроллер и агенты, управляющие жизненным циклом AI-агентов в кластере.
+- **Инфраструктурный слой**: Использует стандартные объекты Kubernetes (Secret, ConfigMap, ReferenceGrant) вместе с Custom Resource Definitions (CRDs) от `agentgateway` и `kagent`.
 
-## Package Structure
+## Структура проекта
 
-- `infra/`: Contains Kubernetes manifests for the AI infrastructure, including Gateway, HTTPRoute, AgentgatewayBackend, and provider configurations.
-- `agent/`: Contains declarative definitions for AI agents (`Agent`) and model configurations (`ModelConfig`).
-- `scripts/`: Utility scripts for verifying and testing the deployed infrastructure.
-- `.github/workflows/`: CI/CD pipelines, including the newly implemented AI PR instrumentation.
+- `kubernetes/apps/`: Содержит манифесты приложений Kubernetes, включая `agentgateway.yaml`, `kagent.yaml`, `infra.yaml` (секреты, роутинг) и `platform-agent.yaml`.
+- `kubernetes/crds/`: Содержит определения пользовательских ресурсов (CRDs) для `agentgateway`, `kagent` и Gateway API.
+- `infrastructure/bootstrap/`: Конфигурация Terraform для подготовки облачной инфраструктуры и Flux CD.
+- `scripts/`: Утилиты для тестирования и проверки развернутой инфраструктуры.
+- `.github/workflows/`: CI/CD пайплайны для Flux CD и автоматизации репозитория.
+- `.mise/tasks/`: Пользовательские задачи `mise` для настройки и развертывания проекта.
 
-## Main Domain Types (CRDs)
+## Основные типы домена (CRDs)
 
-- `Agent`: Defines an AI agent's behavior and associated model configuration.
-- `ModelConfig`: Configures the LLM provider, model, and authentication for agents.
-- `AgentgatewayBackend`: Defines how `agentgateway` should route and process AI requests (e.g., Gemini).
-- `Gateway`, `HTTPRoute`: Standard Kubernetes Gateway API resources used for routing.
+- `Agent`: Определяет поведение AI агента и связанную с ним конфигурацию модели.
+- `ModelConfig`: Настраивает провайдера LLM, модель и аутентификацию для агентов.
+- `MCPServer`: (KAgent CRD) Описывает сервер Model Context Protocol для предоставления инструментов агентам.
+- `AgentgatewayBackend`: Определяет, как `agentgateway` должен маршрутизировать и обрабатывать AI запросы (например, Gemini).
+- `Gateway`, `HTTPRoute`: Стандартные ресурсы Kubernetes Gateway API, используемые для маршрутизации.
 
-## Naming Conventions
+## Соглашения по именованию
 
-- Kubernetes manifests use `kebab-case` for file names (e.g., `basic-agent.yaml`).
-- Resource names within manifests also follow `kebab-case`.
-- Namespaces are consistently used: `agentgateway-system` for the gateway and `kagent` for the agents.
+- Манифесты Kubernetes используют `kebab-case` для имен файлов (например, `platform-agent.yaml`).
+- Имена ресурсов внутри манифестов также следуют `kebab-case`.
+- Пространства имен (Namespaces) используются согласованно: `agentgateway-system` для шлюза и `kagent` для агентов.
 
-## Code Patterns
+## Паттерны кода
 
-- **Declarative Management**: All infrastructure and agent configurations are managed as YAML manifests.
-- **Gateway API Integration**: Using `HTTPRoute` with `parentRefs` to link routes to the `Gateway`.
-- **Secret Management**: API keys and sensitive data are handled via Kubernetes `Secrets` and referenced in `ModelConfig` or `AgentgatewayBackend`.
+- **Декларативное управление**: Вся инфраструктура и конфигурации агентов управляются как манифесты YAML.
+- **Интеграция с Gateway API**: Использование `HTTPRoute` с `parentRefs` для привязки маршрутов к `Gateway`.
+- **Управление секретами**: API-ключи и конфиденциальные данные обрабатываются через `Secret` Kubernetes и ссылаются в `ModelConfig` или `AgentgatewayBackend`.
+- **Инструменты (Tools)**: Использование MCP (Model Context Protocol) для расширения возможностей агентов через внешние серверы.

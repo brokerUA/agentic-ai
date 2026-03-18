@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-#MISE description="Deploy: Agent and ModelConfig"
-
-set -euo pipefail
-
-ROOT="$(git rev-parse --show-toplevel)"
-kubectl apply -k "$ROOT/kubernetes/apps/agent"

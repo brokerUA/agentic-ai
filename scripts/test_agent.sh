@@ -38,7 +38,7 @@ if ! kubectl get svc -n agentgateway-system "$SVC_NAME" >/dev/null 2>&1; then
         if ! kubectl get svc -n agentgateway-system "$SVC_NAME" >/dev/null 2>&1; then
             echo "❌ Gateway service not found in namespace 'agentgateway-system'."
             echo "   Tried names: agent-gateway, gwy-agent-gateway, agentgateway"
-            echo "   Check if the gateway was deployed correctly with 'mise run deploy-agentgateway'."
+            echo "   Check if the gateway was deployed correctly with 'mise run up'."
             exit 1
         fi
     fi

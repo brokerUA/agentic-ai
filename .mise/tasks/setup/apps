@@ -5,4 +5,7 @@
 set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
-kubectl apply -k kubernetes
+# Substitute environment variables in YAML files before applying
+# Note: kubectl kustomize can be used, but since we want to substitute $GEMINI_API_KEY
+# which might be inside the resources, we pipe the kustomize output through envsubst
+kubectl kustomize kubernetes | envsubst '$GEMINI_API_KEY' | kubectl apply -f -
