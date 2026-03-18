@@ -10,7 +10,7 @@ on:
 jobs:
   ai-evals:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ (github.event_name == 'workflow_dispatch') || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') }}
     permissions:
       contents: read
       pull-requests: write
@@ -26,10 +26,11 @@ jobs:
           script: |
             let prNumber;
             if (context.eventName === 'workflow_run') {
+              const head_branch = context.payload.workflow_run.head_branch;
               const prs = await github.rest.pulls.list({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                head: `${context.repo.owner}:${github.event.workflow_run.head_branch}`
+                head: `${context.repo.owner}:${head_branch}`
               });
               prNumber = prs.data[0]?.number;
             } else {
