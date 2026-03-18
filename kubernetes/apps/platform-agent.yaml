@@ -1,0 +1,49 @@
+apiVersion: kagent.dev/v1alpha2
+kind: Agent
+metadata:
+  name: platform-assistant
+  namespace: kagent
+spec:
+  type: Declarative
+  declarative:
+    systemMessage: |
+      You are a specialized Echo Assistant. 
+      Your tone is technical, precise, and helpful.
+      You have access to a tool named 'echo' which takes a text message and returns it back to the user with an "Echo: " prefix.
+      If the user asks to echo a message, use this tool.
+    modelConfig: platform-agent-config
+    tools:
+      - type: McpServer
+        mcpServer:
+          name: k8s-pod-mcp
+          toolNames: ["echo"]
+---
+apiVersion: kagent.dev/v1alpha2
+kind: ModelConfig
+metadata:
+  name: platform-agent-config
+  namespace: kagent
+spec:
+  provider: OpenAI
+  model: "gemini-2.5-flash-lite"
+  openAI:
+    # Pointing to the internal Agent Gateway
+    baseUrl: "http://agent-gateway.agentgateway-system.svc.cluster.local:8080/v1"
+  apiKeySecret: gemini-api-key
+  apiKeySecretKey: api-key
+---
+apiVersion: kagent.dev/v1alpha1
+kind: MCPServer
+metadata:
+  name: k8s-pod-mcp
+  namespace: kagent
+spec:
+  transportType: http
+  httpTransport:
+    path: "/mcp"
+    targetPort: 3000
+  deployment:
+    image: ghcr.io/brokerua/my-mcp-server:latest
+    imagePullPolicy: Always
+    port: 3000
+    args: ["-http", ":3000"]
