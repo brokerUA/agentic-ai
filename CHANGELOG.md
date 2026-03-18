@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fixed an error in the GitHub Actions workflow `.github/workflows/flux-push.yaml` that prevented artifact digest extraction.
+- Fixed an error in the GitHub Actions workflow `.github/workflows/flux-push.yaml` related to artifact digest extraction and GHCR repository naming (ensuring lowercase).
 - Resolved Node.js 20 deprecation warnings in CI/CD pipelines.
 
 ## [0.1.0] - 2026-03-19
