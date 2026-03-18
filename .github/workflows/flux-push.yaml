@@ -12,6 +12,8 @@ jobs:
       contents: read
       packages: write
 
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,13 +34,21 @@ jobs:
         id: push
         run: |
           TAG=${GITHUB_REF_NAME#v}
-          digest=$(flux push artifact "oci://ghcr.io/${{ github.repository }}/releases:${TAG}" \
+          # flux push artifact output to stdout might be just the URL@digest or JSON
+          # we want to ensure we get the digest correctly
+          # if --output json is used, it should be in the format {"digest": "sha256:..."}
+          
+          OUTPUT=$(flux push artifact "oci://ghcr.io/${{ github.repository }}/releases:${TAG}" \
             --path="./kubernetes" \
             --source="${{ github.repositoryUrl }}" \
             --revision="${{ github.ref_name }}@sha1:${{ github.sha }}" \
-            --output json | jq -r '.digest')
+            --output json)
+          
+          echo "Output: $OUTPUT"
+          DIGEST=$(echo "$OUTPUT" | jq -r '.digest')
+          
           echo "tag=${TAG}" >> $GITHUB_OUTPUT
-          echo "digest=${digest}" >> $GITHUB_OUTPUT
+          echo "digest=${DIGEST}" >> $GITHUB_OUTPUT
 
       - name: Tag artifact
         run: |
