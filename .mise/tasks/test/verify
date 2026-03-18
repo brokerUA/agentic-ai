@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Test: Verify infrastructure and agent status"
+
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+"$ROOT/scripts/verify_agent.sh"

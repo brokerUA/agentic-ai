@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Quality: Simulate git diff for PR"
+
+set -euo pipefail
+
+git diff main...HEAD > simulated_pr.diff && echo 'Diff saved to simulated_pr.diff'

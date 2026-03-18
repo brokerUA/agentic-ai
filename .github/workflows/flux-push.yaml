@@ -1,0 +1,59 @@
+name: Push releases as OCI artifact
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Flux CLI
+        uses: fluxcd/flux2/action@main
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push OCI artifact
+        id: push
+        run: |
+          TAG=${GITHUB_REF_NAME#v}
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          # flux push artifact output to stdout might be just the URL@digest or JSON
+          # we want to ensure we get the digest correctly
+          # if --output json is used, it should be in the format {"digest": "sha256:..."}
+          
+          OUTPUT=$(flux push artifact "oci://ghcr.io/${REPO_LOWER}/releases:${TAG}" \
+            --path="./kubernetes" \
+            --source="${{ github.repositoryUrl }}" \
+            --revision="${{ github.ref_name }}@sha1:${{ github.sha }}" \
+            --output json)
+          
+          echo "Output: $OUTPUT"
+          DIGEST=$(echo "$OUTPUT" | jq -r '.digest')
+          
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "digest=${DIGEST}" >> $GITHUB_OUTPUT
+          echo "repo_lower=${REPO_LOWER}" >> $GITHUB_OUTPUT
+
+      - name: Tag artifact
+        run: |
+          flux tag artifact \
+            "oci://ghcr.io/${{ steps.push.outputs.repo_lower }}/releases:${{ steps.push.outputs.tag }}@${{ steps.push.outputs.digest }}" \
+            --tag latest

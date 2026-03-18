@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Quality: Validate documentation files"
+
+set -euo pipefail
+
+markdownlint-cli2 CODEBASE.md REVIEW.md EVALS.md
