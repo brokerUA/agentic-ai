@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added `kmcp-crds` for standardizing MCP (Model Control Protocol) server management.
+
+### Changed
+- Moved `MCPServer` resource from `kagent` to `kmcp-system` namespace in `platform-agent.yaml` for better infrastructure separation.
+- Updated `Agent` tool reference to point to `MCPServer` in the `kmcp-system` namespace.
+
 ## [0.1.0] - 2026-03-19
 
 ### Added
