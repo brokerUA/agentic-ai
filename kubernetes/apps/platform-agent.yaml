@@ -15,7 +15,7 @@ spec:
     tools:
       - type: McpServer
         mcpServer:
-          name: k8s-pod-mcp
+          name: my-mcp-server
           toolNames: ["echo"]
 ---
 apiVersion: kagent.dev/v1alpha2
@@ -35,8 +35,8 @@ spec:
 apiVersion: kagent.dev/v1alpha1
 kind: MCPServer
 metadata:
-  name: k8s-pod-mcp
-  namespace: kagent
+  name: my-mcp-server
+  namespace: kmcp-system
 spec:
   transportType: http
   httpTransport:
