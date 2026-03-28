@@ -11,9 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `MCP Governance` component (controller, dashboard, policies) for managing and auditing MCP server interactions.
 - Added `Agent Registry` component (inventory, discovery) for centralized management of agents, MCP servers, and skills.
 - Added `learning-agent-team` in `kagent` namespace:
-  - `learning-professor`: Technical expert agent.
-  - `learning-student`: Learning assistant agent.
-  - `learning-editor`: Content refinement agent.
+    - `learning-professor`: Technical expert agent.
+    - `learning-student`: Learning assistant agent.
+    - `learning-editor`: Content refinement agent.
 - Added `mcp-governance-crds` and `agentregistry-crds`.
 
 ### Fixed
