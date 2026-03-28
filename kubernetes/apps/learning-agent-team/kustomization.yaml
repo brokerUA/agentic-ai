@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - learning-professor-agent.yaml
+  - learning-student-agent.yaml
+  - learning-editor-agent.yaml

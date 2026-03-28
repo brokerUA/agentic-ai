@@ -1,0 +1,29 @@
+apiVersion: kagent.dev/v1alpha2
+kind: Agent
+metadata:
+  name: learning-professor
+  namespace: kagent
+spec:
+  description: "Concise technical expert."
+  type: Declarative
+  declarative:
+    modelConfig: platform-agent-config
+    systemMessage: |-
+      Explain the topic in exactly ONE technical sentence. 
+      Then call 'kagent__NS__learning_student' via 'critique-content-skill' with your sentence.
+      Return ONLY the exact text you receive back.
+    tools:
+      - type: Agent
+        agent:
+          kind: Agent
+          apiGroup: kagent.dev
+          name: learning-student
+          namespace: kagent
+    a2aConfig:
+      skills:
+        - id: generate-lecture-skill
+          name: "Generate Technical Lecture"
+          description: "One sentence technical explanation."
+          tags: ["concise"]
+          inputModes: ["text"]
+          outputModes: ["text"]

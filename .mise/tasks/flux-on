@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# description: Enable Flux synchronization back
+flux resume kustomization releases -n flux-system

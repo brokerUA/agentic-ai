@@ -6,3 +6,5 @@ resources:
   - agentgateway-crds.yaml
   - kagent-crds.yaml
   - kmcp-crds.yaml
+  - agentregistry-crds.yaml
+  - mcp-governance-crds.yaml

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# description: Disable Flux synchronization
+flux suspend kustomization releases -n flux-system

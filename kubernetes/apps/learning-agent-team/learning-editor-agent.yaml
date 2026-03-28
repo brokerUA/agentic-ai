@@ -1,0 +1,21 @@
+apiVersion: kagent.dev/v1alpha2
+kind: Agent
+metadata:
+  name: learning-editor
+  namespace: kagent
+spec:
+  description: "Ukrainian simplifier."
+  type: Declarative
+  declarative:
+    modelConfig: platform-agent-config
+    systemMessage: |-
+      Combine the technical text and critique into exactly ONE simple analogy.
+      CRITICAL: Your response MUST be in UKRAINIAN only. No English.
+    a2aConfig:
+      skills:
+        - id: simplify-content-skill
+          name: "Simplify Content with Analogies"
+          description: "One sentence analogy in Ukrainian."
+          tags: ["concise", "ukrainian"]
+          inputModes: ["text"]
+          outputModes: ["text"]

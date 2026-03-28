@@ -81,7 +81,7 @@ RESPONSE=$(curl -s -X POST "http://localhost:$PORT/v1/chat/completions" \
   -H "Host: model.agent.internal" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gemini-2.5-flash-lite",
+    "model": "gemini-2.5-flash",
     "messages": [
       {"role": "user", "content": "Who are you and what is your goal in this environment? Mention the specific infrastructure you are running in."}
     ]
