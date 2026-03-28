@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# description: Update Kubernetes resources from the local file system
+kubectl apply -k kubernetes/

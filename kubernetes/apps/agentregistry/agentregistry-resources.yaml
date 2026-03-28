@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: agentregistry
+---
+apiVersion: agentregistry.dev/v1alpha1
+kind: SkillCatalog
+metadata:
+  name: echo-skill-v1-0-0
+  namespace: agentregistry
+spec:
+  name: "echo-skill"
+  version: "1.0.0"
+  title: "Echo Skill"
+  description: "Skill that returns input message with prefix"
+  category: "utility"

@@ -7,13 +7,16 @@ This project implements a Kubernetes-based cloud infrastructure for AI agents us
 ## Architecture
 
 - **AgentGateway (KGway mode)**: Fully integrated with the Kubernetes Gateway API (`Gateway`, `HTTPRoute`, `AgentgatewayBackend`). It acts as a gateway for routing requests to various LLM providers.
-- **KAgent**: Controller and agents managing the lifecycle of AI agents within the cluster.
-- **Infrastructure Layer**: Uses standard Kubernetes objects (Secret, ConfigMap, ReferenceGrant) alongside Custom Resource Definitions (CRDs) from `agentgateway` and `kagent`.
+- **KAgent**: Controller and agents managing the lifecycle of AI agents within the cluster. Supports Agent-to-Agent (A2A) communication.
+- **Agent Registry**: Service for discovery and inventory of agents, MCP servers, and skills.
+- **MCP Governance**: Provides policy-based control (allow/deny) and auditing for MCP tool usage.
+- **Infrastructure Layer**: Uses standard Kubernetes objects (Secret, ConfigMap, ReferenceGrant) alongside Custom Resource Definitions (CRDs) from `agentgateway`, `kagent`, `agentregistry`, and `mcp-governance`.
 
 ## Project Structure
 
-- `kubernetes/apps/`: Contains Kubernetes application manifests, including `agentgateway.yaml`, `kagent.yaml`, `infra.yaml` (secrets, routing), and `platform-agent.yaml`.
-- `kubernetes/crds/`: Contains Custom Resource Definitions (CRDs) for `agentgateway`, `kagent`, and the Gateway API.
+- `kubernetes/apps/`: Contains Kubernetes application manifests, including `agentgateway.yaml`, `kagent.yaml`, `infra.yaml`, `mcp-governance.yaml`, and the `agentregistry/` directory.
+- `kubernetes/crds/`: Contains Custom Resource Definitions (CRDs) for all components including `agentgateway`, `kagent`, `agentregistry`, and `mcp-governance`.
+- `charts/`: Helm charts for custom infrastructure components like `mcp-governance`.
 - `infrastructure/bootstrap/`: Terraform configurations for provisioning cloud infrastructure and Flux CD.
 - `scripts/`: Utilities for testing and verifying the deployed infrastructure.
 - `.github/workflows/`: CI/CD pipelines for Flux CD and repository automation.
@@ -24,6 +27,9 @@ This project implements a Kubernetes-based cloud infrastructure for AI agents us
 - `Agent`: Defines AI agent behavior and associated model configuration.
 - `ModelConfig`: Configures the LLM provider, model, and authentication for agents.
 - `MCPServer`: (KAgent CRD) Describes a Model Context Protocol server to provide tools to agents.
+- `AgentCatalog`: (Agent Registry CRD) Registry entry for a reusable agent definition.
+- `MCPServerCatalog`: (Agent Registry CRD) Registry entry for a reusable MCP server.
+- `MCPGovernancePolicy`: (Governance CRD) Defines access policies for MCP tools.
 - `AgentgatewayBackend`: Defines how `agentgateway` should route and process AI requests (e.g., Gemini).
 - `Gateway`, `HTTPRoute`: Standard Kubernetes Gateway API resources used for routing.
 

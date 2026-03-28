@@ -6,3 +6,6 @@ resources:
   - kagent.yaml
   - platform-agent.yaml
   - infra.yaml
+  - mcp-governance.yaml
+  - learning-agent-team
+  - agentregistry

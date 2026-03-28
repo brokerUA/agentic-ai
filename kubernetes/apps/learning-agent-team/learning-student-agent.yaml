@@ -1,0 +1,29 @@
+apiVersion: kagent.dev/v1alpha2
+kind: Agent
+metadata:
+  name: learning-student
+  namespace: kagent
+spec:
+  description: "Concise critic."
+  type: Declarative
+  declarative:
+    modelConfig: platform-agent-config
+    systemMessage: |-
+      Identify exactly ONE complex term in the provided text in one short sentence. 
+      Then call 'kagent__NS__learning_editor' via 'simplify-content-skill' with the original text and your critique.
+      Return ONLY the exact text you receive back.
+    tools:
+      - type: Agent
+        agent:
+          kind: Agent
+          apiGroup: kagent.dev
+          name: learning-editor
+          namespace: kagent
+    a2aConfig:
+      skills:
+        - id: critique-content-skill
+          name: "Critique Technical Content"
+          description: "One sentence critique."
+          tags: ["concise"]
+          inputModes: ["text"]
+          outputModes: ["text"]

@@ -25,7 +25,7 @@ metadata:
   namespace: kagent
 spec:
   provider: OpenAI
-  model: "gemini-2.5-flash-lite"
+  model: "gemini-2.5-flash"
   openAI:
     # Pointing to the internal Agent Gateway
     baseUrl: "http://agent-gateway.agentgateway-system.svc.cluster.local:8080/v1"
@@ -36,7 +36,7 @@ apiVersion: kagent.dev/v1alpha1
 kind: MCPServer
 metadata:
   name: my-mcp-server
-  namespace: kmcp-system
+  namespace: kagent
 spec:
   transportType: http
   httpTransport:

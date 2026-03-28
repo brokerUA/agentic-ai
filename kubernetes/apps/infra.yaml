@@ -29,7 +29,7 @@ spec:
       - providers:
           - name: gemini-provider
             gemini:
-              model: "gemini-2.5-flash-lite"
+              model: "gemini-2.5-flash"
             policies:
               auth:
                 secretRef:

@@ -34,6 +34,12 @@ To ensure everything is working correctly, run:
     ```
     (Ensure `k8s-agent` and others are in `Ready` state)
 
+4.  **Check Agent Inventory Auto-discovery:**
+    ```bash
+    kubectl get agentcatalog -n agentregistry -l agentregistry.dev/discovered=true
+    kubectl get mcpservercatalog -n agentregistry -l agentregistry.dev/discovered=true
+    ```
+
 ## TODO
 - Switch to Streamable HTTP instead of SSE for MCP.
 - Configure AgentGateway to receive deployment events instead of polling periodically.

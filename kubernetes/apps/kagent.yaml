@@ -7,7 +7,7 @@ spec:
   interval: 1h
   url: oci://ghcr.io/kagent-dev/kagent/helm/kagent
   ref:
-    tag: "0.7.23"
+    tag: "0.8.0"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -23,7 +23,7 @@ spec:
       - patch: |
           - op: add
             path: /metadata/labels/app.kubernetes.io~1version
-            value: "0.7.23"
+            value: "0.8.0"
         target:
           labelSelector: app.kubernetes.io/name=kagent
   dependsOn:
@@ -38,31 +38,41 @@ spec:
   values:
     controller:
       image:
-        tag: 0.7.23
-    tag: 0.7.23
+        tag: 0.8.0
+    tag: 0.8.0
     ui:
       image:
-        tag: 0.7.23
+        tag: 0.8.0
     tools:
       querydoc:
         enabled: false
     agents:
-      cilium-policy-agent:
-        enabled: false
-      cilium-manager-agent:
+      argo-rollouts-agent:
         enabled: false
       cilium-debug-agent:
         enabled: false
+      cilium-manager-agent:
+        enabled: false
+      cilium-policy-agent:
+        enabled: false
+      helm-agent:
+        enabled: false
       istio-agent:
         enabled: false
-      istio-policy-agent:
+      k8s-agent:
         enabled: false
-      istio-manager-agent:
+      kgateway-agent:
+        enabled: false
+      observability-agent:
+        enabled: false
+      promql-agent:
         enabled: false
     providers:
-      default: openAI
-      openAI:
-        apiKey: OPENAI_API_KEY
+      default: gemini
+      gemini:
+        apiKeySecretKey: api-key
+        apiKeySecretRef: gemini-api-key
+        model: gemini-2.5-flash-lite
 ---
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
